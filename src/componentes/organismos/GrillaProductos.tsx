@@ -17,8 +17,7 @@ export default function GrillaProductos() {
     let resultado = PRODUCTOS.filter((p) => {
       const coincideTexto =
         p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-        p.codigo.toLowerCase().includes(busqueda.toLowerCase()) ||
-        p.marca.toLowerCase().includes(busqueda.toLowerCase());
+        p.codigo.toLowerCase().includes(busqueda.toLowerCase());
       const coincideCategoria = !categoria || p.categoria === categoria;
       return coincideTexto && coincideCategoria;
     });
