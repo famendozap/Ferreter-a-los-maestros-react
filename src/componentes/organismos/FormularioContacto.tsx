@@ -10,6 +10,7 @@ export default function FormularioContacto() {
   const [errores, setErrores] = useState<Record<string, string>>({});
   const [enviado, setEnviado] = useState(false);
 
+  // Valida el formulario y muestra confirmación local; todavía no envía datos a un servidor.
   function manejarEnvio(e: FormEvent) {
     e.preventDefault();
     const resultado = validarContacto(datos);

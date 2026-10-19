@@ -28,6 +28,7 @@ export default function FormularioRegistro() {
     setDatos((prev) => ({ ...prev, [campo]: valor }));
   }
 
+  // Valida los datos y evita duplicados antes de crear la cuenta en memoria e iniciar sesión.
   function manejarEnvio(e: FormEvent) {
     e.preventDefault();
     const resultado = validarRegistro(datos);

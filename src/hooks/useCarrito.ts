@@ -17,6 +17,7 @@ function leerCarritoInicial(): ItemCarrito[] {
   }
 }
 
+// Mantiene el carrito en estado, lo sincroniza con localStorage y calcula sus totales.
 export function useCarrito() {
   const [items, setItems] = useState<ItemCarrito[]>(leerCarritoInicial);
 

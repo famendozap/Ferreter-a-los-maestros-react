@@ -8,7 +8,7 @@ describe('<FormularioContacto />', () => {
     const usuario = userEvent.setup();
     render(<FormularioContacto />);
 
-    await usuario.click(screen.getByRole('button', { name: /enviar mensaje/i, enabled: true }));
+    await usuario.click(screen.getByRole('button', { name: /enviar mensaje/i }));
 
     expect(await screen.findByText(/tu nombre es obligatorio/i)).toBeInTheDocument();
     expect(screen.getByText(/el correo es obligatorio/i)).toBeInTheDocument();

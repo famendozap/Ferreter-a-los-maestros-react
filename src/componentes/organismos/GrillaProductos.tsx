@@ -13,6 +13,7 @@ export default function GrillaProductos() {
 
   const categorias = useMemo(() => obtenerCategorias(), []);
 
+  // Combina búsqueda, categoría y orden sin modificar el arreglo original del catálogo.
   const productosFiltrados = useMemo(() => {
     let resultado = PRODUCTOS.filter((p) => {
       const coincideTexto =

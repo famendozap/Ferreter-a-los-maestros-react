@@ -11,6 +11,7 @@ export interface Producto {
   stockMin: number;
 }
 
+// Catálogo en memoria; las funciones auxiliares permiten consultar códigos y categorías.
 export const PRODUCTOS: Producto[] = [
   { codigo: 'MC001', categoria: 'Mat. Construcción', subcategoria: 'Cementos', nombre: 'Cemento Polpaico gris 25 kg', marca: 'Polpaico', unidad: 'Saco', pCompra: 3200, pVenta: 5990, stock: 80, stockMin: 20 },
   { codigo: 'MC002', categoria: 'Mat. Construcción', subcategoria: 'Cementos', nombre: 'Cemento Melón blanco 25 kg', marca: 'Melón', unidad: 'Saco', pCompra: 4100, pVenta: 7490, stock: 40, stockMin: 10 },

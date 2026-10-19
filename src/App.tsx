@@ -20,6 +20,7 @@ import AdminProductoEditar from './paginas/admin/AdminProductoEditar';
 import AdminUsuarios from './paginas/admin/AdminUsuarios';
 import AdminUsuarioForm from './paginas/admin/AdminUsuarioForm';
 
+// Define la navegación pública y limita las rutas administrativas al usuario autorizado.
 function App() {
   return (
     <div className="d-flex flex-column min-vh-100">

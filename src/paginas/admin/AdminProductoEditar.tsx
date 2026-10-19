@@ -31,6 +31,7 @@ export default function AdminProductoEditar() {
     setProducto((p) => ({ ...p, [campo]: valor }));
   }
 
+  // Guarda altas o cambios en memoria y vuelve al listado; los datos no persisten al recargar.
   function manejarEnvio(e: FormEvent) {
     e.preventDefault();
     if (esNuevo) {

@@ -20,6 +20,7 @@ function leerSesionInicial(): Usuario | null {
   }
 }
 
+// Comparte la sesión entre componentes y la conserva en localStorage al navegar o recargar.
 export function SesionProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuario] = useState<Usuario | null>(leerSesionInicial);
 

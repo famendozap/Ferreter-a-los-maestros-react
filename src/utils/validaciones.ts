@@ -1,3 +1,4 @@
+// Reúne validaciones y formatos sin depender del DOM para reutilizarlos en formularios y pruebas.
 export function validarRUN(run: string): boolean {
   if (!run) return false;
   const limpio = run.trim().toUpperCase().replace(/[^0-9K]/g, '');

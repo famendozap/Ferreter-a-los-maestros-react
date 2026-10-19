@@ -44,6 +44,6 @@ describe('<CardProducto />', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole('button', { name: /agregar/i, disabled: true })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /agregar/i })).toBeDisabled();
   });
 });

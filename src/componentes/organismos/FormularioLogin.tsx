@@ -14,6 +14,7 @@ export default function FormularioLogin() {
   const navigate = useNavigate();
   const { iniciarSesion } = useSesion();
 
+  // Valida los campos, comprueba la cuenta local y solo inicia sesión si está activa.
   function manejarEnvio(e: FormEvent) {
     e.preventDefault();
     setErrorGeneral('');
