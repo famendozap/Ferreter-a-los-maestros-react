@@ -71,3 +71,49 @@ export function buscarUsuarioPorMail(mail: string): Usuario | undefined {
 export function buscarUsuarioPorRun(run: string): Usuario | undefined {
   return USUARIOS.find((u) => u.run === run);
 }
+
+export function listarUsuarios(): Usuario[] {
+  return USUARIOS.map((usuario) => ({ ...usuario }));
+}
+
+export function filtrarUsuarios(busqueda: string): Usuario[] {
+  const consulta = busqueda.trim().toLocaleLowerCase();
+  if (!consulta) return listarUsuarios();
+
+  return USUARIOS.filter(
+    (usuario) =>
+      `${usuario.nombre} ${usuario.apellidos}`.toLocaleLowerCase().includes(consulta) ||
+      usuario.mail.toLocaleLowerCase().includes(consulta) ||
+      usuario.run.toLocaleLowerCase().includes(consulta),
+  ).map((usuario) => ({ ...usuario }));
+}
+
+export function crearUsuario(usuario: Usuario): void {
+  if (buscarUsuarioPorRun(usuario.run)) {
+    throw new Error(`Ya existe un usuario con el RUN ${usuario.run}.`);
+  }
+  if (buscarUsuarioPorMail(usuario.mail)) {
+    throw new Error(`Ya existe un usuario con el correo ${usuario.mail}.`);
+  }
+  USUARIOS.push({ ...usuario });
+}
+
+export function actualizarUsuario(run: string, usuario: Usuario): void {
+  const indice = USUARIOS.findIndex((actual) => actual.run === run);
+  if (indice < 0) throw new Error(`No se encontró el usuario ${run}.`);
+
+  const correoDuplicado = USUARIOS.some(
+    (actual, posicion) => posicion !== indice && actual.mail.toLowerCase() === usuario.mail.toLowerCase(),
+  );
+  if (correoDuplicado) {
+    throw new Error(`Ya existe un usuario con el correo ${usuario.mail}.`);
+  }
+
+  USUARIOS[indice] = { ...usuario, run };
+}
+
+export function eliminarUsuario(run: string): void {
+  const indice = USUARIOS.findIndex((usuario) => usuario.run === run);
+  if (indice < 0) throw new Error(`No se encontró el usuario ${run}.`);
+  USUARIOS.splice(indice, 1);
+}

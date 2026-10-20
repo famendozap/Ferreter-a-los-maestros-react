@@ -1,6 +1,12 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { USUARIOS, buscarUsuarioPorRun, type TipoUsuario, type Usuario } from '../../datos/usuarios';
+import {
+  actualizarUsuario,
+  buscarUsuarioPorRun,
+  crearUsuario,
+  type TipoUsuario,
+  type Usuario,
+} from '../../datos/usuarios';
 import CampoFormulario from '../../componentes/moleculas/CampoFormulario';
 import SelectorRegionComuna from '../../componentes/moleculas/SelectorRegionComuna';
 import Boton from '../../componentes/atomos/Boton';
@@ -29,6 +35,7 @@ export default function AdminUsuarioForm() {
   );
   const [errores, setErrores] = useState<Record<string, string>>({});
   const [guardado, setGuardado] = useState(false);
+  const [error, setError] = useState('');
 
   function actualizar<K extends keyof Usuario>(campo: K, valor: Usuario[K]) {
     setUsuario((u) => ({ ...u, [campo]: valor }));
@@ -45,14 +52,15 @@ export default function AdminUsuarioForm() {
 
     const usuarioFormateado = { ...usuario, run: formatearRUN(usuario.run) };
 
-    if (esNuevo) {
-      USUARIOS.push(usuarioFormateado);
-    } else {
-      const idx = USUARIOS.findIndex((u) => u.run === run);
-      if (idx >= 0) USUARIOS[idx] = usuarioFormateado;
+    setError('');
+    try {
+      if (esNuevo) crearUsuario(usuarioFormateado);
+      else actualizarUsuario(decodeURIComponent(run!), usuarioFormateado);
+      setGuardado(true);
+      setTimeout(() => navigate('/admin/usuarios'), 900);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'No fue posible guardar el usuario.');
     }
-    setGuardado(true);
-    setTimeout(() => navigate('/admin/usuarios'), 900);
   }
 
   return (
@@ -60,6 +68,7 @@ export default function AdminUsuarioForm() {
       <h1 className="h2 mb-4">{esNuevo ? 'Nuevo usuario' : 'Editar usuario'}</h1>
 
       {guardado && <div className="alert alert-success py-2">Usuario guardado correctamente.</div>}
+      {error && <div className="alert alert-danger py-2" role="alert">{error}</div>}
 
       <form onSubmit={manejarEnvio}>
         <div className="row">

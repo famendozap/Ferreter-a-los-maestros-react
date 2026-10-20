@@ -1,26 +1,35 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { PRODUCTOS } from '../../datos/productos';
+import { eliminarProducto, filtrarProductos, listarProductos, type Producto } from '../../datos/productos';
 import { formatearCLP } from '../../utils/validaciones';
 import StockPill from '../atomos/StockPill';
 import Boton from '../atomos/Boton';
 
 export default function TablaProductosAdmin() {
   const [busqueda, setBusqueda] = useState('');
+  const [productos, setProductos] = useState<Producto[]>(listarProductos);
+  const [error, setError] = useState('');
 
   const filtrados = useMemo(
-    () =>
-      PRODUCTOS.filter(
-        (p) =>
-          p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-          p.codigo.toLowerCase().includes(busqueda.toLowerCase()),
-      ),
-    [busqueda],
+    () => filtrarProductos(busqueda).filter((producto) => productos.some((actual) => actual.codigo === producto.codigo)),
+    [busqueda, productos],
   );
+
+  function borrarProducto(codigo: string) {
+    if (!window.confirm(`¿Eliminar el producto ${codigo}?`)) return;
+    try {
+      eliminarProducto(codigo);
+      setProductos(listarProductos());
+      setError('');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'No fue posible eliminar el producto.');
+    }
+  }
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-3 gap-2">
+      {error && <div className="alert alert-danger py-2" role="alert">{error}</div>}
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-3 gap-2">
         <input
           type="search"
           className="form-control"
@@ -58,14 +67,31 @@ export default function TablaProductosAdmin() {
                   <StockPill producto={p} />
                 </td>
                 <td>
-                  <Link to={`/admin/productos/${p.codigo}`}>
-                    <Boton variante="outline" tamano="sm">
-                      Editar
+                  <div className="d-flex flex-wrap gap-2">
+                    <Link to={`/admin/productos/${p.codigo}`}>
+                      <Boton variante="outline" tamano="sm">
+                        Editar
+                      </Boton>
+                    </Link>
+                    <Boton
+                      variante="danger"
+                      tamano="sm"
+                      aria-label={`Eliminar producto ${p.codigo}`}
+                      onClick={() => borrarProducto(p.codigo)}
+                    >
+                      Eliminar
                     </Boton>
-                  </Link>
+                  </div>
                 </td>
               </tr>
             ))}
+            {filtrados.length === 0 && (
+              <tr>
+                <td colSpan={7} className="py-4 text-center text-muted">
+                  No se encontraron productos.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
