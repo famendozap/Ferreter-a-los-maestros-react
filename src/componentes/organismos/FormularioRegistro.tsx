@@ -4,7 +4,7 @@ import CampoFormulario from '../moleculas/CampoFormulario';
 import SelectorRegionComuna from '../moleculas/SelectorRegionComuna';
 import Boton from '../atomos/Boton';
 import { validarRegistro, formatearRUN } from '../../utils/validaciones';
-import { USUARIOS, buscarUsuarioPorRun, buscarUsuarioPorMail } from '../../datos/usuarios';
+import { crearUsuario, buscarUsuarioPorRun, buscarUsuarioPorMail } from '../../datos/usuarios';
 import { useSesion } from '../../hooks/SesionContexto';
 
 export default function FormularioRegistro() {
@@ -60,7 +60,7 @@ export default function FormularioRegistro() {
       direccion: datos.direccion,
       activo: true,
     };
-    USUARIOS.push(nuevoUsuario);
+    crearUsuario(nuevoUsuario);
     iniciarSesion(nuevoUsuario);
     setMensajeExito('¡Cuenta creada correctamente! Redirigiendo al catálogo...');
     setTimeout(() => navigate('/catalogo'), 1200);

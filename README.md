@@ -43,8 +43,9 @@ necesitar un bundler/config aparte como pedía Karma para Angular.
 
 ```bash
 npm install
-npm test          # corre todas las pruebas una vez
-npm run test:watch  # modo watch, útil mientras se desarrolla
+npm test
+npm run test:watch
+npm run test:coverage
 ```
 
 Las pruebas están junto al archivo que prueban (`*.test.ts` / `*.test.tsx`) y cubren los distintos tipos
@@ -52,27 +53,33 @@ de prueba vistos en clase:
 
 | Tipo de prueba | Archivo | Qué verifica |
 |---|---|---|
-| Pruebas unitarias puras (lógica de negocio) | `src/utils/validaciones.test.ts` | Validador de RUN (Módulo 11), formato de RUN, validación de login/registro/contacto |
-| Prueba de componente + eventos/interacciones | `src/componentes/atomos/Boton.test.tsx` | Renderizado, `onClick`, estado `disabled` |
-| Prueba de hook personalizado | `src/hooks/useCarrito.test.ts` | `agregar`/`quitar`/`actualizarCantidad`, persistencia en `localStorage` |
-| Prueba de componente con contexto/routing | `src/componentes/moleculas/CardProducto.test.tsx` | Render con datos reales, link de detalle, callback `onAgregar` |
-| Prueba de componente con estado y validación | `src/componentes/organismos/FormularioContacto.test.tsx` | Errores de validación, contador de caracteres, flujo exitoso |
+| Pruebas de lógica de negocio | `src/utils/validaciones.test.ts`, `src/datos/productos.test.ts`, `src/datos/usuarios.test.ts` | RUN, validaciones, operaciones CRUD, duplicados y filtros |
+| Pruebas de componentes | `src/componentes/atomos/Boton.test.tsx`, `src/componentes/moleculas/CardProducto.test.tsx` | Renderizado, propiedades, eventos, stock y carrito |
+| Pruebas de mantenedores | `src/componentes/organismos/TablaProductosAdmin.test.tsx`, `src/componentes/organismos/TablaUsuariosAdmin.test.tsx` | Filtros, estado vacío, enlaces de edición, activación y eliminación |
+| Prueba de hook personalizado | `src/hooks/useCarrito.test.ts` | Agregar, quitar, actualizar cantidades y persistencia en `localStorage` |
+| Prueba de formulario | `src/componentes/organismos/FormularioContacto.test.tsx` | Errores de validación, contador de caracteres y envío exitoso |
 
 `src/setupTests.ts` carga los matchers de `jest-dom` (`toBeInTheDocument`, `toBeDisabled`, etc.) y
 `src/test-utils.tsx` expone un `renderConProviders()` para probar componentes que dependen de
 React Router y/o de los contextos de carrito/sesión sin tener que montar `<App />` completa.
 
-**No incluidas todavía** (quedan como extensión natural si el profesor las pide): pruebas de integración
-contra una API real (no aplica aún porque no hay backend), pruebas de rendimiento con `react-profiler` y
-pruebas de accesibilidad automatizadas (se podrían agregar con `jest-axe`).
+`npm run test:coverage` genera reportes de texto, JSON y HTML usando V8. El HTML queda en
+`coverage/index.html`; el proceso y sus límites se documentan en [`docs/PRUEBAS.md`](docs/PRUEBAS.md)
+y [`docs/reporte-cobertura.md`](docs/reporte-cobertura.md). La cobertura mide código ejecutado y no
+reemplaza la revisión de que cada prueba compruebe resultados pertinentes.
+
+## Diseño y requisitos
+
+La interfaz está organizada con Atomic Design. El patrón Repository está aplicado en los módulos
+`src/datos/productos.ts` y `src/datos/usuarios.ts`, que separan la lectura, búsqueda y modificación de
+datos de las vistas. Los proveedores de sesión y carrito comparten estado transversal con Context.
+La justificación y el alcance funcional están en [`docs/ERS-actualizado.md`](docs/ERS-actualizado.md).
 
 ## Notas importantes
 
-- **No hay backend ni base de datos**: tal como pide la pauta de la Evaluación Parcial 1, toda la
-  persistencia (carrito, sesión) se hace con `localStorage`. Los datos de productos/usuarios/contenidos
-  son arreglos en memoria (`src/datos/`); al recargar la página, las altas/ediciones hechas en el panel
-  de administración no se guardan permanentemente (esto quedará resuelto en la etapa de microservicios,
-  prevista para el examen final).
+- **No hay backend ni base de datos**: la persistencia de carrito y sesión se hace con `localStorage`.
+  Productos, usuarios y contenidos son datos simulados en memoria (`src/datos/`); los cambios del
+  catálogo y del mantenedor se pierden al recargar la página.
 - **Cuenta de administrador de prueba**: `admin@ferreterialosmaestros.cl` / `admin123`.
 - **Validación de RUN**: `src/utils/validaciones.ts` implementa el algoritmo de dígito verificador
   Módulo 11, usado en el registro de usuarios y en el mantenedor de usuarios del panel admin.

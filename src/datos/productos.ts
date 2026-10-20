@@ -107,3 +107,41 @@ export function obtenerCategorias(): string[] {
 export function buscarPorCodigo(codigo: string): Producto | undefined {
   return PRODUCTOS.find((p) => p.codigo === codigo);
 }
+
+export function listarProductos(): Producto[] {
+  return PRODUCTOS.map((producto) => ({ ...producto }));
+}
+
+export function filtrarProductos(busqueda: string): Producto[] {
+  const consulta = busqueda.trim().toLocaleLowerCase();
+  if (!consulta) return listarProductos();
+
+  return PRODUCTOS.filter(
+    (producto) =>
+      producto.nombre.toLocaleLowerCase().includes(consulta) ||
+      producto.codigo.toLocaleLowerCase().includes(consulta) ||
+      producto.marca.toLocaleLowerCase().includes(consulta),
+  ).map((producto) => ({ ...producto }));
+}
+
+export function crearProducto(producto: Producto): void {
+  if (buscarPorCodigo(producto.codigo)) {
+    throw new Error(`Ya existe un producto con el código ${producto.codigo}.`);
+  }
+  PRODUCTOS.push({ ...producto });
+}
+
+export function actualizarProducto(codigo: string, producto: Producto): void {
+  const indice = PRODUCTOS.findIndex((actual) => actual.codigo === codigo);
+  if (indice < 0) throw new Error(`No se encontró el producto ${codigo}.`);
+  if (producto.codigo !== codigo && buscarPorCodigo(producto.codigo)) {
+    throw new Error(`Ya existe un producto con el código ${producto.codigo}.`);
+  }
+  PRODUCTOS[indice] = { ...producto };
+}
+
+export function eliminarProducto(codigo: string): void {
+  const indice = PRODUCTOS.findIndex((producto) => producto.codigo === codigo);
+  if (indice < 0) throw new Error(`No se encontró el producto ${codigo}.`);
+  PRODUCTOS.splice(indice, 1);
+}
