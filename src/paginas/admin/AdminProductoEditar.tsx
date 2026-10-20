@@ -1,6 +1,12 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PRODUCTOS, buscarPorCodigo, obtenerCategorias, type Producto } from '../../datos/productos';
+import {
+  actualizarProducto,
+  buscarPorCodigo,
+  crearProducto,
+  obtenerCategorias,
+  type Producto,
+} from '../../datos/productos';
 import CampoFormulario from '../../componentes/moleculas/CampoFormulario';
 import Boton from '../../componentes/atomos/Boton';
 
@@ -26,22 +32,23 @@ export default function AdminProductoEditar() {
     esNuevo ? PRODUCTO_VACIO : (buscarPorCodigo(codigo!) ?? PRODUCTO_VACIO),
   );
   const [guardado, setGuardado] = useState(false);
+  const [error, setError] = useState('');
 
   function actualizar<K extends keyof Producto>(campo: K, valor: Producto[K]) {
     setProducto((p) => ({ ...p, [campo]: valor }));
   }
 
-  // Guarda altas o cambios en memoria y vuelve al listado; los datos no persisten al recargar.
   function manejarEnvio(e: FormEvent) {
     e.preventDefault();
-    if (esNuevo) {
-      PRODUCTOS.push({ ...producto, codigo: producto.codigo || `NEW${PRODUCTOS.length + 1}` });
-    } else {
-      const idx = PRODUCTOS.findIndex((p) => p.codigo === codigo);
-      if (idx >= 0) PRODUCTOS[idx] = producto;
+    setError('');
+    try {
+      if (esNuevo) crearProducto(producto);
+      else actualizarProducto(codigo!, producto);
+      setGuardado(true);
+      setTimeout(() => navigate('/admin/productos'), 900);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'No fue posible guardar el producto.');
     }
-    setGuardado(true);
-    setTimeout(() => navigate('/admin/productos'), 900);
   }
 
   return (
@@ -49,6 +56,7 @@ export default function AdminProductoEditar() {
       <h1 className="h2 mb-4">{esNuevo ? 'Nuevo producto' : 'Editar producto'}</h1>
 
       {guardado && <div className="alert alert-success py-2">Producto guardado correctamente.</div>}
+      {error && <div className="alert alert-danger py-2" role="alert">{error}</div>}
 
       <form onSubmit={manejarEnvio}>
         <div className="row">
