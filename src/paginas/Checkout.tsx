@@ -130,6 +130,28 @@ export default function Checkout() {
   }
 
   if (confirmada) {
+    const entrega =
+      datos.tipoEntrega === 'despacho'
+        ? `${datos.direccion}, ${datos.comuna}, ${datos.region}`
+        : 'Retiro en tienda, Av. Francisco de Aguirre 123, La Serena';
+    const cuerpoCorreo = [
+      'Hola, quisiera solicitar este pedido:',
+      '',
+      ...detalles.map(
+        ({ producto, cantidad }) =>
+          `${producto.nombre} x ${cantidad}: ${formatearCLP(producto.pVenta * cantidad)}`,
+      ),
+      `Total estimado: ${formatearCLP(totalCLP)}`,
+      '',
+      `Nombre: ${datos.nombre}`,
+      `Correo: ${datos.correo}`,
+      `Entrega: ${entrega}`,
+      `Medio de pago: ${etiquetasMetodoPago[datos.metodoPago]}`,
+    ].join('\n');
+    const enlaceCorreo = `mailto:contacto@ferreterialosmaestros.cl?subject=${encodeURIComponent(
+      'Solicitud de pedido - Ferretería Los Maestros',
+    )}&body=${encodeURIComponent(cuerpoCorreo)}`;
+
     return (
       <div className="container py-5">
         <div className="mx-auto" style={{ maxWidth: '680px' }}>
@@ -138,7 +160,7 @@ export default function Checkout() {
             <p className="mb-0">
               {datos.metodoPago === 'tarjeta'
                 ? 'Tarjeta de prueba aprobada. No se realizó ningún cobro y el pedido no se envió a la tienda.'
-                : 'Esta demostración no envía el pedido a la tienda ni procesa pagos. Para coordinar la compra, contacta directamente con la ferretería.'}
+                : 'Esta demostración no procesa pagos. El pedido no se envía hasta que prepares y envíes el correo.'}
             </p>
           </div>
           <h2 className="h5">Resumen del pedido</h2>
@@ -168,6 +190,9 @@ export default function Checkout() {
               <span>{formatearCLP(totalCLP)}</span>
             </li>
           </ul>
+          <a className="btn btn-lm-primary me-2 mb-2" href={enlaceCorreo}>
+            Preparar correo para enviar el pedido
+          </a>
           <Link to="/carrito">
             <Boton variante="outline">Volver al carrito</Boton>
           </Link>

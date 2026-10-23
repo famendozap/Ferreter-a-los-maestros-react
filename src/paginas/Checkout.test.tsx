@@ -46,10 +46,16 @@ describe('flujo de solicitud del carrito', () => {
     fireEvent.change(screen.getByLabelText('Dirección'), { target: { value: 'Calle Uno 123' } });
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar solicitud' }));
 
-    expect(screen.getByRole('status')).toHaveTextContent('ni procesa pagos');
+    expect(screen.getByRole('status')).toHaveTextContent('no procesa pagos');
     expect(screen.getByText('Calle Uno 123, La Serena, Coquimbo')).toBeInTheDocument();
     expect(screen.getByText('Transferencia bancaria')).toBeInTheDocument();
     expect(screen.getAllByText('$11.980')).toHaveLength(2);
+    const enlaceCorreo = screen.getByRole('link', { name: 'Preparar correo para enviar el pedido' });
+    const correoPreparado = decodeURIComponent(enlaceCorreo.getAttribute('href') ?? '');
+    expect(correoPreparado).toContain('mailto:contacto@ferreterialosmaestros.cl');
+    expect(correoPreparado).toContain('Cemento Polpaico gris 25 kg x 2: $11.980');
+    expect(correoPreparado).toContain('Calle Uno 123, La Serena, Coquimbo');
+    expect(correoPreparado).not.toContain('4242424242424242');
     expect(JSON.parse(localStorage.getItem('lm_carrito') ?? '[]')).toEqual([
       { codigo: 'MC001', cantidad: 2 },
     ]);
