@@ -48,6 +48,11 @@ export default function Checkout() {
         ? valor.replace(/\D/g, '')
         : campo === 'cvv'
           ? valor.replace(/\D/g, '')
+          : campo === 'vencimiento'
+            ? valor
+                .replace(/\D/g, '')
+                .slice(0, 4)
+                .replace(/^(\d{2})(\d)/, '$1/$2')
           : valor;
     if (campo !== 'titular' && !DATOS_TARJETA_PRUEBA[campo].startsWith(valorSeguro)) return;
 

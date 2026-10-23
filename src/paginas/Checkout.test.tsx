@@ -91,7 +91,13 @@ describe('flujo de solicitud del carrito', () => {
     fireEvent.change(screen.getByLabelText('Número de tarjeta de prueba'), {
       target: { value: '4242424242424242' },
     });
-    fireEvent.change(screen.getByLabelText('Vencimiento'), { target: { value: '12/30' } });
+    const vencimiento = screen.getByLabelText('Vencimiento');
+    fireEvent.change(vencimiento, { target: { value: '1' } });
+    fireEvent.change(vencimiento, { target: { value: '12' } });
+    fireEvent.change(vencimiento, { target: { value: '123' } });
+    expect(vencimiento).toHaveValue('12/3');
+    fireEvent.change(vencimiento, { target: { value: '1230' } });
+    expect(vencimiento).toHaveValue('12/30');
     fireEvent.change(screen.getByLabelText('Código de seguridad de prueba'), {
       target: { value: '123' },
     });
