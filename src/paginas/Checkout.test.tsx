@@ -90,7 +90,13 @@ describe('flujo de solicitud del carrito', () => {
     expect(screen.getByText('Ingresa el nombre del titular de prueba.')).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText('Nombre del titular'), {
-      target: { value: 'Ana Pérez (prueba)' },
+      target: { value: 'AB' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Confirmar pago de prueba y pedido' }));
+    expect(screen.getByText('El nombre del titular debe tener al menos 3 caracteres.')).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('Nombre del titular'), {
+      target: { value: 'Ana Prueba' },
     });
     const vencimiento = screen.getByLabelText('Vencimiento');
     fireEvent.change(vencimiento, { target: { value: '1' } });

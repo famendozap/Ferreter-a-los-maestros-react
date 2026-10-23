@@ -96,6 +96,9 @@ export default function Checkout() {
 
     if (datos.metodoPago === 'tarjeta') {
       if (!tarjeta.titular.trim()) nuevosErrores.titular = 'Ingresa el nombre del titular de prueba.';
+      else if (tarjeta.titular.trim().length < 3) {
+        nuevosErrores.titular = 'El nombre del titular debe tener al menos 3 caracteres.';
+      }
       if (tarjeta.numero !== DATOS_TARJETA_PRUEBA.numero) {
         nuevosErrores.numero = 'En esta demostración solo se acepta la tarjeta de prueba indicada.';
       }
@@ -297,6 +300,7 @@ export default function Checkout() {
                   etiqueta="Nombre del titular"
                   id="titularTarjeta"
                   autoComplete="off"
+                  maxLength={80}
                   value={tarjeta.titular}
                   onChange={(evento) => actualizarTarjeta('titular', evento.target.value)}
                   error={errores.titular}
