@@ -2,6 +2,7 @@ import FormularioContacto from '../componentes/organismos/FormularioContacto';
 
 const UBICACION_LOCAL = 'Av. Francisco de Aguirre 123, La Serena, Chile';
 const URL_MAPA = `https://www.google.com/maps?q=${encodeURIComponent(UBICACION_LOCAL)}&output=embed`;
+const URL_INDICACIONES = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(UBICACION_LOCAL)}`;
 
 export default function Contacto() {
   return (
@@ -27,6 +28,15 @@ export default function Contacto() {
               allowFullScreen
             />
           </div>
+          <a
+            className="btn btn-outline-dark mt-3"
+            href={URL_INDICACIONES}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i className="bi bi-geo-alt-fill me-2" aria-hidden="true" />
+            Cómo llegar
+          </a>
         </section>
       </div>
     </div>
