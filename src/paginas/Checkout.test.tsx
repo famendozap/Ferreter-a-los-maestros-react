@@ -77,19 +77,20 @@ describe('flujo de solicitud del carrito', () => {
       'aria-describedby',
       'ayudaNumeroTarjeta',
     );
+    fireEvent.click(screen.getByRole('button', { name: 'Completar datos de prueba' }));
+    expect(screen.getByLabelText('Número de tarjeta de prueba')).toHaveValue('4242424242424242');
+    expect(screen.getByLabelText('Vencimiento')).toHaveValue('12/30');
+    expect(screen.getByLabelText('Código de seguridad de prueba')).toHaveValue('123');
     fireEvent.change(screen.getByLabelText('Número de tarjeta de prueba'), {
       target: { value: '4111111111111111' },
     });
-    expect(screen.getByLabelText('Número de tarjeta de prueba')).toHaveValue('');
+    expect(screen.getByLabelText('Número de tarjeta de prueba')).toHaveValue('4242424242424242');
 
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar pago de prueba y pedido' }));
     expect(screen.getByText('Ingresa el nombre del titular de prueba.')).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText('Nombre del titular'), {
       target: { value: 'Ana Pérez (prueba)' },
-    });
-    fireEvent.change(screen.getByLabelText('Número de tarjeta de prueba'), {
-      target: { value: '4242424242424242' },
     });
     const vencimiento = screen.getByLabelText('Vencimiento');
     fireEvent.change(vencimiento, { target: { value: '1' } });
@@ -98,9 +99,6 @@ describe('flujo de solicitud del carrito', () => {
     expect(vencimiento).toHaveValue('12/3');
     fireEvent.change(vencimiento, { target: { value: '1230' } });
     expect(vencimiento).toHaveValue('12/30');
-    fireEvent.change(screen.getByLabelText('Código de seguridad de prueba'), {
-      target: { value: '123' },
-    });
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar pago de prueba y pedido' }));
     expect(screen.getByRole('status')).toHaveTextContent('Tarjeta de prueba aprobada');
     expect(screen.getByRole('status')).toHaveTextContent('No se realizó ningún cobro');

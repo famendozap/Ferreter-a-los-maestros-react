@@ -64,6 +64,22 @@ export default function Checkout() {
     });
   }
 
+  function completarDatosTarjetaPrueba() {
+    setTarjeta((actual) => ({
+      ...actual,
+      numero: DATOS_TARJETA_PRUEBA.numero,
+      vencimiento: DATOS_TARJETA_PRUEBA.vencimiento,
+      cvv: DATOS_TARJETA_PRUEBA.cvv,
+    }));
+    setErrores((actuales) => {
+      const siguientes = { ...actuales };
+      delete siguientes.numero;
+      delete siguientes.vencimiento;
+      delete siguientes.cvv;
+      return siguientes;
+    });
+  }
+
   function manejarEnvio(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault();
     const nuevosErrores: Record<string, string> = {};
@@ -269,6 +285,14 @@ export default function Checkout() {
                   Esta es una demostración: no ingreses datos de una tarjeta real. Solo se aceptan los
                   datos ficticios mostrados a continuación. No se guardan ni se envían.
                 </div>
+                <Boton
+                  type="button"
+                  variante="outline"
+                  className="mb-3"
+                  onClick={completarDatosTarjetaPrueba}
+                >
+                  Completar datos de prueba
+                </Boton>
                 <CampoFormulario
                   etiqueta="Nombre del titular"
                   id="titularTarjeta"
